@@ -10,11 +10,11 @@ export const fetchAllContacts = async () => {
 };
 
 export const addNewContact = async newContact => {
-  const { data } = await contactsInstances.get('/contacts', newContact);
+  const { data } = await contactsInstances.post('/contacts', newContact);
   return data;
 };
 
 export const deleteNewContact = async contactId => {
-  const { data } = await contactsInstances.get(`/contacts/${contactId}`);
+  const { data } = await contactsInstances.delete(`/contacts/${contactId}`);
   return data;
 };
