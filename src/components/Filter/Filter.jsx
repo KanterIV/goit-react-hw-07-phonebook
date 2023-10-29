@@ -6,7 +6,6 @@ export const Filter = () => {
   const dispatch = useDispatch();
 
   const handleFilterInputChange = event => {
-    console.log(event.target.value);
     dispatch(setFilter(event.target.value));
   };
 

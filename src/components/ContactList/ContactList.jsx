@@ -3,12 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { deleteContact, fetchContacts } from 'redux/contactsReducer';
 import { ContactListItem } from 'components/ContactListItem/ContactListItem';
-import { selectFilter, selectItems } from 'redux/contactsSelectors';
+import { selectVisibleContacts } from 'redux/contactsSelectors';
 
 export const ContactList = () => {
   const dispatch = useDispatch();
-  const items = useSelector(selectItems);
-  const filter = useSelector(selectFilter);
+
+  const contactsArr = useSelector(selectVisibleContacts);
 
   useEffect(() => {
     dispatch(fetchContacts());
@@ -17,10 +17,6 @@ export const ContactList = () => {
   const hanldeDeleteContact = contactId => {
     dispatch(deleteContact(contactId));
   };
-
-  const contactsArr = items.filter(contact => {
-    return contact.name.toLowerCase().includes(filter.toLowerCase());
-  });
 
   return (
     <ul className={css.contactsList}>
