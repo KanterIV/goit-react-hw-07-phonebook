@@ -1,23 +1,24 @@
-// import { useDispatch } from 'react-redux';
-// import css from './Filter.module.css';
-// // import { setFilter } from 'redux/contactsReducer';
+import { useDispatch } from 'react-redux';
+import css from './Filter.module.css';
+import { setFilter } from 'redux/contactsReducer';
 
-// export const Filter = () => {
-//   const dispatch = useDispatch();
+export const Filter = () => {
+  const dispatch = useDispatch();
 
-//   // const handleFilterInputChange = event => {
-//   //   dispatch(setFilter(event.target.value));
-//   // };
+  const handleFilterInputChange = event => {
+    console.log(event.target.value);
+    dispatch(setFilter(event.target.value));
+  };
 
-//   return (
-//     <>
-//       <p>Fined contacts by name</p>
-//       <input
-//         className={css.filterInput}
-//         onChange={handleFilterInputChange}
-//         type="text"
-//         name="filter"
-//       />
-//     </>
-//   );
-// };
+  return (
+    <>
+      <p>Fined contacts by name</p>
+      <input
+        className={css.filterInput}
+        onChange={handleFilterInputChange}
+        type="text"
+        name="filter"
+      />
+    </>
+  );
+};

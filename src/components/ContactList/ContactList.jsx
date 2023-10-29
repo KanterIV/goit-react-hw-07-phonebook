@@ -1,29 +1,26 @@
-import { ContactListItem } from 'components/ContactListItem/ContactListItem';
-import { useDispatch, useSelector } from 'react-redux';
 import css from './ContactsList.module.css';
-import { getContacts } from 'redux/contactsReducer';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { selectItems } from 'redux/contactsSelectors';
+import { deleteContact, getContacts } from 'redux/contactsReducer';
+import { ContactListItem } from 'components/ContactListItem/ContactListItem';
+import { selectFilter, selectItems } from 'redux/contactsSelectors';
 
 export const ContactList = () => {
   const dispatch = useDispatch();
+  const items = useSelector(selectItems);
+  const filter = useSelector(selectFilter);
 
   useEffect(() => {
     dispatch(getContacts());
   }, [dispatch]);
 
-  const contactsArr = useSelector(selectItems);
+  const hanldeDeleteContact = contactId => {
+    dispatch(deleteContact(contactId));
+  };
 
-  // const contacts = useSelector(state => state.contacts.contacts.items);
-  // const filter = useSelector(state => state.contacts.filter);
-
-  // const hanldeDeleteContact = contactId => {
-  //   dispatch(deleteContact(contactId));
-  // };
-
-  // const contactsArr = contacts.filter(contact => {
-  //   return contact.name.toLowerCase().includes(filter.toLowerCase());
-  // });
+  const contactsArr = items.filter(contact => {
+    return contact.name.toLowerCase().includes(filter.toLowerCase());
+  });
 
   return (
     <ul className={css.contactsList}>
@@ -36,7 +33,7 @@ export const ContactList = () => {
               contactId={id}
               contactName={name}
               contactNumber={phone}
-              // deleteContact={hanldeDeleteContact}
+              deleteContact={hanldeDeleteContact}
             />
           );
         })}
