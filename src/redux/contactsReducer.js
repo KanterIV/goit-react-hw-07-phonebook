@@ -6,8 +6,8 @@ import {
   fetchAllContacts,
 } from 'services/api';
 
-export const getContacts = createAsyncThunk(
-  'contacts/fetchAllContacts',
+export const fetchContacts = createAsyncThunk(
+  'contacts/fetchAll',
   async (_, thunkAPI) => {
     try {
       const contacts = await fetchAllContacts();
@@ -101,15 +101,15 @@ const contactsSlice = createSlice({
   },
   extraReducers: builder => {
     builder
-      .addCase(getContacts.pending, (state, action) => {
+      .addCase(fetchContacts.pending, (state, action) => {
         state.contacts.isLoading = true;
         state.contacts.error = null;
       })
-      .addCase(getContacts.fulfilled, (state, action) => {
+      .addCase(fetchContacts.fulfilled, (state, action) => {
         state.contacts.isLoading = false;
         state.contacts.items = action.payload;
       })
-      .addCase(getContacts.rejected, (state, action) => {
+      .addCase(fetchContacts.rejected, (state, action) => {
         state.contacts.isLoading = false;
         state.contacts.error = action.payload;
       })
