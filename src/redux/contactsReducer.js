@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import { fetchAllContacts } from 'services/api';
+import { addNewContact, fetchAllContacts } from 'services/api';
 
 export const getContacts = createAsyncThunk(
   'contacts/fetchAllContacts',
@@ -8,6 +8,31 @@ export const getContacts = createAsyncThunk(
     try {
       const contacts = await fetchAllContacts();
       return contacts;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        toast.error('Something went wrong. We are already working on it', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+          toastId: 'errorMessage',
+        })
+      );
+    }
+  }
+);
+
+export const addContact = createAsyncThunk(
+  'contacts/AddContact',
+  async (newContact, thunkAPI) => {
+    try {
+      const contact = await addNewContact(newContact);
+      console.log(contact);
+      return contact;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         toast.error('Something went wrong. We are already working on it', {
@@ -70,6 +95,18 @@ const contactsSlice = createSlice({
         state.contacts.items = action.payload;
       })
       .addCase(getContacts.rejected, (state, action) => {
+        state.contacts.isLoading = false;
+        state.contacts.error = action.payload;
+      })
+      .addCase(addContact.pending, (state, action) => {
+        state.contacts.isLoading = true;
+        state.contacts.error = null;
+      })
+      .addCase(addContact.fulfilled, (state, action) => {
+        state.contacts.isLoading = false;
+        state.contacts.items.unshift(action.payload);
+      })
+      .addCase(addContact.rejected, (state, action) => {
         state.contacts.isLoading = false;
         state.contacts.error = action.payload;
       });
