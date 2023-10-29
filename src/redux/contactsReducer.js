@@ -1,4 +1,30 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { toast } from 'react-toastify';
+import { fetchAllContacts } from 'services/api';
+
+export const getContacts = createAsyncThunk(
+  'contacts/fetchAllContacts',
+  async (_, thunkAPI) => {
+    try {
+      const contacts = await fetchAllContacts();
+      return contacts;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        toast.error('Something went wrong. We are already working on it', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+          toastId: 'errorMessage',
+        })
+      );
+    }
+  }
+);
 
 const INITIAL_STATE = {
   contacts: {
@@ -15,28 +41,43 @@ const contactsSlice = createSlice({
   // Начальное состояние редюсера слайса
   initialState: INITIAL_STATE,
   // Объект редюсеров
-  reducers: {
-    setContacts(state, action) {
-      state.contacts = action.payload;
-    },
-    setFilter(state, action) {
-      state.filter = action.payload;
-    },
+  //! reducers: {
+  //   setContacts(state, action) {
+  //     state.contacts = action.payload;
+  //   },
+  //   setFilter(state, action) {
+  //     state.filter = action.payload;
+  //   },
 
-    addContact(state, action) {
-      state.contacts.push(action.payload);
-    },
+  //   addContact(state, action) {
+  //     state.contacts.push(action.payload);
+  //   },
 
-    deleteContact(state, action) {
-      state.contacts = state.contacts.filter(
-        contact => contact.id !== action.payload
-      );
-    },
+  //   deleteContact(state, action) {
+  //     state.contacts = state.contacts.filter(
+  //       contact => contact.id !== action.payload
+  //     );
+  //   },
+  // },
+  extraReducers: builder => {
+    builder
+      .addCase(getContacts.pending, (state, action) => {
+        state.contacts.isLoading = true;
+        state.contacts.error = null;
+      })
+      .addCase(getContacts.fulfilled, (state, action) => {
+        state.contacts.isLoading = false;
+        state.contacts.items = action.payload;
+      })
+      .addCase(getContacts.rejected, (state, action) => {
+        state.contacts.isLoading = false;
+        state.contacts.error = action.payload;
+      });
   },
 });
 
 // Генераторы экшенов
-export const { setContacts, setFilter, addContact, deleteContact } =
-  contactsSlice.actions;
+//! export const { setContacts, setFilter, addContact, deleteContact } =
+//   contactsSlice.actions;
 // Редюсер слайса
 export const contactsReducer = contactsSlice.reducer;
